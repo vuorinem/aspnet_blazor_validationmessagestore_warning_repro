@@ -1,0 +1,36 @@
+﻿@page "/"
+
+<EditForm EditContext=editContext>
+    <InputText @bind-Value=model.Text></InputText>
+    <button @onclick=ManualValidation>Validate</button>
+
+    <ValidationMessage For=@(() => model.Text)></ValidationMessage>
+</EditForm>
+
+@code {
+    private TestModel model = new();
+
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+
+    private class TestModel
+    {
+        public string? Text { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        editContext = new(model);
+        messageStore = new(editContext);
+    }
+
+    private void ManualValidation()
+    {
+        messageStore?.Clear();
+
+        if (true /* External validation rule */)
+        {
+            messageStore?.Add(() => model.Text, "This value is not valid");
+        }
+    }
+}
